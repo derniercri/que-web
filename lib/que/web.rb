@@ -21,7 +21,7 @@ module Que
     get "/running" do
       worker_states = search_running Que.job_states
       pager = get_pager worker_states.count
-      @list = Viewmodels::JobList.new(worker_states, pager)
+      @list = Viewmodels::JobList.new(worker_states, pager, search)
       erb :running
     end
 
@@ -29,7 +29,7 @@ module Que
       stats = Que.execute SQL[:dashboard_stats], [search]
       pager = get_pager stats[0][:failing]
       failing_jobs = Que.execute SQL[:failing_jobs], [pager.page_size, pager.offset, search]
-      @list = Viewmodels::JobList.new(failing_jobs, pager)
+      @list = Viewmodels::JobList.new(failing_jobs, pager, search)
       erb :failing
     end
 
@@ -37,7 +37,7 @@ module Que
       stats = Que.execute SQL[:dashboard_stats], [search]
       pager = get_pager stats[0][:scheduled]
       scheduled_jobs = Que.execute SQL[:scheduled_jobs], [pager.page_size, pager.offset, search]
-      @list = Viewmodels::JobList.new(scheduled_jobs, pager)
+      @list = Viewmodels::JobList.new(scheduled_jobs, pager, search)
       erb :scheduled
     end
 
